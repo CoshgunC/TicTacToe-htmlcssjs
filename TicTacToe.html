@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- https://www.svgrepo.com/show/143264/tic-tac-toe-game.svg  -->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Tic Tac Toe Game">
+  <meta name="keywords" content="Tic Tac Toe, Game, HTML, CSS, JavaScript">
+  <meta name="author" content="Your Name">
+  <title>Tic Tac Toe</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poetsen+One&display=swap">
+  <style>
+    body {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      font-family: "Poetsen One", sans-serif;
+    }
+
+    .tiles {
+      display: grid;
+      grid-template-columns: repeat(3, 90px);
+      grid-template-rows: repeat(3, 90px);
+    }
+
+    .cell {
+      border: 2px solid #123;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      cursor: pointer;
+    }
+
+    .color_x {
+      color: #0f5ebf;
+    }
+
+    .color_o {
+      color: #0fbf1e;
+    }
+
+.cell:nth-child(3n) {
+border-right: none;
+}
+
+.cell:nth-child(3n-2) {
+border-left: none;
+}
+
+.cell:nth-child(n+7) {
+border-bottom: none;
+}
+
+.cell:nth-child(1), .cell:nth-child(2), .cell:nth-child(3) {
+border-top: none;
+}
+
+#gameBoard p{
+  font-size: 20px;
+}
+
+button {
+margin-top: 10px;
+padding: 10px 18px 10px 18px;
+font-size: 18px;
+border: 2px solid transparent;
+border-radius: 50px;
+background: #0fafbf;
+color: white;
+cursor: pointer;
+transition: 0.2s;
+}
+
+button:hover {
+border: 2px solid #0fafbf;
+color: #0fafbf;
+background: white;
+}
+  </style>
+</head>
+<body>
+  <div id="gameBoard">
+    <p>Tic Tac Toe</p>
+    <p class="status">Turn: <span id="status">X</span></p>
+    <p class="result">Winner: <span id="winner_span"></span></p>
+    <div class="tiles">
+      <div class="cell" data-cell-index="0"></div>
+      <div class="cell" data-cell-index="1"></div>
+      <div class="cell" data-cell-index="2"></div>
+      <div class="cell" data-cell-index="3"></div>
+      <div class="cell" data-cell-index="4"></div>
+      <div class="cell" data-cell-index="5"></div>
+      <div class="cell" data-cell-index="6"></div>
+      <div class="cell" data-cell-index="7"></div>
+      <div class="cell" data-cell-index="8"></div>
+    </div>
+    <div class="bottom">
+      <button id="reset">Reset</button>
+    </div>
+  </div>
+  <script>
+    const winningConditions = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6]
+    ];const allCells = document.querySelectorAll(".cell");const statusText = document.querySelector("#status");const winnerText = document.querySelector("#winner_span");const resetBtn = document.querySelector("#reset");let options = ["", "", "", "", "", "", "", "", ""];let currentPlayer = "X";let running = false;
+
+    initializeGame();
+
+    function initializeGame() {
+      allCells.forEach(cell => cell.addEventListener("click", cellClicked));
+      resetBtn.addEventListener("click", resetGame);
+      statusText.textContent = currentPlayer;
+      running = true;
+    }
+
+    function cellClicked() {
+      const cellIndex = this.getAttribute("data-cell-index");
+
+      if (options[cellIndex] !== "" || !running) {
+        return;
+      }
+      updateCell(this, cellIndex);
+      checkWinner();
+    }
+
+    function updateCell(cell, index) {
+      options[index] = currentPlayer;
+      cell.textContent = currentPlayer;
+      cell.classList.add(currentPlayer === "X" ? "color_x" : "color_o");
+    }
+
+    function resetGame() {
+      currentPlayer = "X";
+      options = ["", "", "", "", "", "", "", "", ""];
+      statusText.textContent = currentPlayer;
+      winnerText.textContent = "";
+      allCells.forEach(cell => {
+        cell.textContent = "";
+        cell.classList.remove("color_x", "color_o");
+      });
+running = true;
+    }
+
+function checkWinner() {let roundWon = false;for(let i = 0; i < winningConditions.length; i++) {const condition = winningConditions[i];const cellA = options[condition[0]];const cellB = options[condition[1]];const cellC = options[condition[2]];if (cellA === "" || cellB === "" || cellC === "") {
+          continue;
+        }
+        if (cellA === cellB && cellB === cellC) {
+          roundWon = true;
+          break;
+        }
+      }
+      if (roundWon) {
+        winnerText.classList.add(currentPlayer === "X" ? "color_x" : "color_o")
+        winnerText.textContent = currentPlayer;
+        running = false;
+      } else if (!options.includes("")) {
+        winnerText.textContent = "Draw!";
+        running = false;
+      } else {
+        changePlayer();
+      }
+    }
+
+    function changePlayer() {currentPlayer = (currentPlayer === "X") ? "O" : "X";statusText.textContent = currentPlayer;}
+  </script>
+</body>
+</html>
